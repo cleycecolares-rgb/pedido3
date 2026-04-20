@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>...</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&family=Playfair+Display&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(180deg, #f8f6ff, #e6f0ff);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* topo */
+.topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 2;
+}
+
+.img-topo {
+  width: 70px;
+}
+
+/* texto */
+h1 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 56px; /* BEM maior */
+  color: #6b5ca5;
+  text-align: center;
+}
+
+p {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  color: #6b5ca5;
+}
+
+/* botões */
+button {
+  padding: 14px 26px;
+  font-size: 20px;
+  margin: 12px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.sim {
+  background: #d6ccff;
+  color: #4a3f8a;
+}
+
+.nao {
+  background: #fff3c4;
+  color: #8a7a3f;
+  position: absolute;
+}
+
+/* imagem do não */
+.bg-nao {
+  position: absolute;
+  width: 280px;
+  opacity: 0.25;
+  z-index: 1;
+}
+
+/* fotos */
+.foto {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 16px;
+  opacity: 0.85;
+  animation: flutuar linear infinite;
+}
+
+@keyframes flutuar {
+  from { transform: translateY(100vh); }
+  to { transform: translateY(-120vh); }
+}
+
+/* balões */
+.balao {
+  position: absolute;
+  bottom: -100px;
+  width: 35px;
+  height: 50px;
+  border-radius: 50%;
+  animation: subir 6s linear infinite;
+}
+
+@keyframes subir {
+  from { transform: translateY(0); }
+  to { transform: translateY(-120vh); }
+}
+</style>
+</head>
+
+<body>
+
+<audio id="musica" loop>
+  <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
+<div id="tela">
+
+  <div class="topo">
+    <img src="decoracao.png" class="img-topo">
+    <h1>Você aceita namorar comigo? (Do you wanna dance?)</h1>
+  </div>
+
+  <button class="sim" onclick="aceitou()">sim</button>
+  <button class="nao" id="nao" onmouseover="tentarNao()">não</button>
+
+</div>
+
+<script>
+
+// 🎵 música contínua
+function tocarMusica() {
+  const musica = document.getElementById("musica");
+  musica.muted = true;
+  musica.play().then(() => {
+    musica.muted = false;
+  }).catch(() => {});
+}
+document.addEventListener("click", tocarMusica, { once: true });
+document.addEventListener("touchstart", tocarMusica, { once: true });
+
+// 😈 tentativa de clicar no não
+function tentarNao() {
+
+  // imagem aparece
+  const img = document.createElement("img");
+  img.src = "nao.png";
+  img.classList.add("bg-nao");
+
+  img.style.left = "50%";
+  img.style.top = "40%";
+  img.style.transform = "translate(-50%, -50%)";
+
+  document.body.appendChild(img);
+
+  setTimeout(() => img.remove(), 2000);
+
+  // botão foge
+  fugir();
+}
+
+// botão foge
+function fugir() {
+  const btn = document.getElementById('nao');
+  btn.style.top = Math.random() * window.innerHeight + "px";
+  btn.style.left = Math.random() * window.innerWidth + "px";
+}
+
+// 💖 quando aceita
+function aceitou() {
+  const tela = document.getElementById("tela");
+
+  tela.innerHTML = `
+    <div class="topo">
+      <img src="decoracao.png" class="img-topo">
+      <h1>UHUUL! AGORA É OFICIAL, VOCÊ MINHA NAMORADAAA</h1>
+    </div>
+    <p>isso aqui é só o começo</p>
+  `;
+
+  // 🎈 balões
+  setInterval(() => {
+    const balao = document.createElement("div");
+    balao.classList.add("balao");
+    balao.style.left = Math.random() * 100 + "vw";
+    balao.style.background = cores();
+    document.body.appendChild(balao);
+  }, 300);
+
+  // ✨ PNGs fixos
+  const decors = ["decor1.png","decor2.png","decor3.png","decor4.png"];
+
+  decors.forEach((src) => {
+    const img = document.createElement("img");
+    img.src = src;
+
+    img.style.position = "absolute";
+    img.style.width = "90px";
+    img.style.top = Math.random() * 80 + "vh";
+    img.style.left = Math.random() * 90 + "vw";
+
+    document.body.appendChild(img);
+  });
+}
+
+// cores suaves
+function cores() {
+  const lista = ["#d6ccff", "#cce5ff", "#fff3c4", "#e0d4ff"];
+  return lista[Math.floor(Math.random() * lista.length)];
+}
+
+// 📸 fotos
+const fotos = [
+  "foto1.jpg","foto2.jpg","foto3.jpg","foto4.jpg","foto5.jpg",
+  "foto6.jpg","foto7.jpg","foto8.jpg","foto9.jpg","foto10.jpg"
+];
+
+setInterval(() => {
+  const img = document.createElement("img");
+  img.src = fotos[Math.floor(Math.random() * fotos.length)];
+  img.classList.add("foto");
+
+  img.style.left = Math.random() * 100 + "vw";
+  img.style.animationDuration = (6 + Math.random() * 6) + "s";
+
+  document.body.appendChild(img);
+
+  setTimeout(() => img.remove(), 12000);
+}, 500);
+
+// 💖 emojis
+const elementos = ["💖","⭐","🎀","✨","💛","🎉"];
+
+setInterval(() => {
+  const el = document.createElement("div");
+  el.innerHTML = elementos[Math.floor(Math.random() * elementos.length)];
+
+  el.style.position = "absolute";
+  el.style.left = Math.random() * 100 + "vw";
+  el.style.bottom = "-50px";
+  el.style.fontSize = (22 + Math.random() * 22) + "px";
+  el.style.opacity = 0.8;
+  el.style.animation = "subir 6s linear";
+
+  document.body.appendChild(el);
+
+  setTimeout(() => el.remove(), 6000);
+}, 300);
+
+</script>
+
+</body>
+</html>
